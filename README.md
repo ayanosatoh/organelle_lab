@@ -1,1 +1,2 @@
-# ててて
+# about RNAseq_YK
+
