@@ -1,0 +1,47 @@
+DL.sh
+qsubに投げる
+SraAccList.txtに書いてあるアクセッションナンバーに従って、SRAからfastqファイルをダウンロードし、gzipで圧縮する
+SraAccList.txtは、BioProjectのページ右側にあるRelated informationからSRAに飛んで、Send toをクリック、Fileを選択してFormatをAccession Listに変更してCriate Fileでダウンロードできる
+
+fastq_zikkou.sh
+shコマンドで実行する(qsubに投げない)
+DL.shを複数実行するだけ
+cdでフォルダに移動して、DL.shをqsubに投げる。次のフォルダに移動してDL.shをqsubに投げる……。というもの
+1行目のfor i in $(cat FolderList.txt)は、FolderList.txtを参照してループ処理をする為のもの
+FolderList.txtにフォルダ名を改行で区切って書いておけば良い
+
+gene_expression_analysis.sh
+qsubに投げる
+RhelixaのRNA-seq解析パイプライン実行コマンドをいじったもの。
+_2.fastq.gzというファイル名があれば、_1.fastq.gzと_2.fastq.gzとでpair endのリードデータとしてRNAseqをし、なければsingle endデータとして処理をする。
+SRAから落として来た場合はこのファイル名だが、シーケンスを委託した場合などは違う場合もあるので、ファイル名を書き換えるか、コマンドを書き換える必要あり
+DL.shと同様に、SraAccList.txtに載っているファイルについて処理をしている
+
+idou.sh
+カウントデータをidouフォルダに取り出す
+
+kaiseki_zikkou.sh
+shコマンドで実行する(qsubに投げない)
+fastq_zikkou.shではDL.shを複数のフォルダで実行したが、こちらはgene_expression_analysis.shを複数のフォルダで実行するもの
+
+makedir.sh
+shコマンドで実行する(qsubに投げない)
+フォルダを作成し、DL.sh, gene_expression_analysis.sh, tar.shをその中に設置する
+
+tar.gz
+qsubに投げる
+ディレクトリをそれぞれtar.gzに圧縮する
+各フォルダに移動させているが、必要ない気がする(というか、移動先でやったらfastqファイルがアーカイブされないし同名フォルダが量産されて事故るじゃん)
+
+使い方
+任意のフォルダに、上記のファイルをすべて入れる
+FolderList.txtに、RNAseqするBioProjectの名前を改行で一つずつ区切って記入する
+makedir.shを実行する
+ダウンロードしてきたSraAccList.txtをそれぞれのディレクトリに配置していく
+fastq_zikkou.shを実行し、qsubに投げられたDL.shが全て終わるまで待機(qstatで表示されなければOK)
+一応それぞれのフォルダを確認して、ダウンロードできていることを確かめる
+idou.shでカウントデータを取り出す
+kaiseki_zikkou.shを実行し、qsubに投げられたgene_expression_analysis.shが全て終わるまで待機(qstatで表示されなければOK)
+(容量がやばい可能性があるので、ホームディレクトリで du -hs コマンドを使って容量確認)
+tar.shコマンドを実行して圧縮(各フォルダに移動した方ではなく、最初に入れたもの)
+圧縮されたものをどこかに保存する

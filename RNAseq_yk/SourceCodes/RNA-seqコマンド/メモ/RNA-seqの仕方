@@ -1,0 +1,13 @@
+RNA-seqの際は、一つのフォルダに次のものを入れる
+・gene_expression_analysis.sh
+・2本鎖それぞれのfastaファイル(gzでも可、その方が容量的に良い)
+gene_expression_analysis.shを開き、記入する(6, 7行目、後ろ4行)
+
+cdコマンド等で作成したフォルダに移動し、以下のコマンドを実行
+　　　qsub gene_expression_analysis.sh
+実際に動いているかどうかは次のコマンドで確認できる
+	qstat
+qstatは、実行中のキュージョブを参照出来る。
+gene_expression_analysisみたいな名前(途中で途切れている)のジョブがあればOK。
+複数個同時にqsubで投げれば、その数だけあるはず。
+なければ投げた時のメッセージを確認する(多分確実にエラー吐いてる)。
