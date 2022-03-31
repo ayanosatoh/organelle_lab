@@ -1,2 +1,2 @@
-# about RNAseq_YK
+# publication related codes and sources
 
